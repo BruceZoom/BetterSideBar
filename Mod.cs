@@ -3,9 +3,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace ExampleModNS
+namespace BetterSideBarNS
 {
-    public class ExampleMod : Mod
+    public class BetterSideBar : Mod
     {
         public override void Ready()
         {
