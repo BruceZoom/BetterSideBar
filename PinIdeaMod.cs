@@ -129,6 +129,7 @@ namespace BetterSideBarNS
                                 if (HideUnfavor.Value)
                                 {
                                     ideaElement.gameObject.SetActive(false);
+                                    GameScreen.instance.UpdateIdeasLog();
                                 }
                             });
                             favorLabel.SetActive(false);
@@ -306,11 +307,22 @@ namespace BetterSideBarNS
         [HarmonyPatch(typeof(GameScreen), "UpdateIdeasLog")]
         public class UpdateIdeasLogHarmonyPatches
         {
-            public static void Postfix()
+            public static void Postfix(GameScreen __instance, List<ExpandableLabel> ___ideaLabels)
             {
                 for (int i = 0; i < ideaElements.Count; i++)
                 {
                     UpdateIdea(i);
+                }
+                if (!string.IsNullOrEmpty(__instance.IdeaSearchField.text))
+                {
+                    foreach (ExpandableLabel label in ___ideaLabels)
+                    {
+                        if (label.Children.Count((GameObject x) => x.activeSelf) <= 0)
+                        {
+                            label.gameObject.SetActive(value: false);
+                            label.IsExpanded = false;
+                        }
+                    }
                 }
             }
         }
@@ -326,21 +338,27 @@ namespace BetterSideBarNS
             if (HideUnfavor.Value)
             {
                 // element is active only when
+                // - it is active originally,
+                //      otherwise unseen ones or not searched ones will show up
                 // - it is favorite
                 // - it is new
                 // - it is hovered or clicked
                 // TODO: this could be implemented better if there is a way to add
                 // an oneshot callback to the element or its button's update
-                element.gameObject.SetActive(isFidea[idx_ie] || element.IsNew ||
-                    element.MyButton.IsHovered || element.MyButton.IsSelected);
+                element.gameObject.SetActive(
+                    element.gameObject.activeSelf && 
+                    (isFidea[idx_ie] || element.IsNew ||
+                    element.MyButton.IsHovered || element.MyButton.IsSelected)
+                );
                 // when the element is active even when it is not favorite,
                 // it is then displayed due to other conditions,
                 // need a coroutine to wait until other conditons are no longer valid and hide it
-                if ((element.MyButton.IsHovered || element.MyButton.IsSelected || element.IsNew)
-                    && !isFidea[idx_ie])
+                if (element.gameObject.activeSelf && !isFidea[idx_ie] && 
+                    (element.MyButton.IsHovered || element.MyButton.IsSelected || element.IsNew))
                 {
                     HideUnhoveredCoroutine.StartCoroutine(element, delegate {
                         element.gameObject.SetActive(false);
+                        GameScreen.instance.UpdateIdeasLog();
                     });
                 }
             }
