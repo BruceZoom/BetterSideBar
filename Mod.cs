@@ -134,7 +134,7 @@ namespace BetterSideBarNS
                             Fideas.Remove(cardId);
                             groupFNumMap[ideaElement.MyKnowledge.Group] -= 1;
                             // this unpin should happen only when the idea is unhovered
-                            HideUnhoveredCoroutine.StartCoroutine(idx_ie, delegate
+                            HideUnhoveredCoroutine.StartCoroutine(ideaElement, delegate
                             {
                                 UnpinIdea(idx_ie, ideaElement);
                                 if (HideUnfavor.Value)
@@ -350,88 +350,12 @@ namespace BetterSideBarNS
                 if ((element.MyButton.IsHovered || element.MyButton.IsSelected || element.IsNew)
                     && !isFidea[idx_ie])
                 {
-                    HideUnhoveredCoroutine.StartCoroutine(idx_ie, delegate {
+                    HideUnhoveredCoroutine.StartCoroutine(element, delegate {
                         element.gameObject.SetActive(false);
                     });
                 }
             }
         }
-
-        /// <summary>
-        /// Encapsulation for HideUnhoveredCoroutine methods
-        /// </summary>
-        public static class HideUnhoveredCoroutine
-        {
-            public static int hidingUnhoveredIdeaIdx;
-            public static event Action hidingUnhoveredIdeaCallback;
-
-            public static void InterruptCoroutine()
-            {
-                hidingUnhoveredIdeaIdx = -1;
-            }
-
-            public static void StartCoroutine(int idx_ie, Action callback)
-            {
-                // prevent reentry
-                if (hidingUnhoveredIdeaIdx != -1) return;
-                hidingUnhoveredIdeaIdx = idx_ie;
-                hidingUnhoveredIdeaCallback = callback;
-            }
-
-            public static void StartCoroutine(int idx_ie)
-            {
-                // prevent reentry
-                if (hidingUnhoveredIdeaIdx != -1) return;
-                hidingUnhoveredIdeaIdx = idx_ie;
-                hidingUnhoveredIdeaCallback = null;
-            }
-
-            public static void InvokeCallback()
-            {
-                hidingUnhoveredIdeaCallback?.Invoke();
-            }
-        }
-
-        /// <summary>
-        /// Running the condition checker for HideUnhoveredCoroutine
-        /// </summary>
-        [HarmonyPatch(typeof(GameScreen), "Update")]
-        public class HideUnhoveredCoroutineHarmonyPatches
-        {
-            public static void Postfix()
-            {
-                // when a valid hovered idea is waiting to hide,
-                // and it is no longer hovered/selected/new, then hide it
-                int idx = HideUnhoveredCoroutine.hidingUnhoveredIdeaIdx;
-                if (idx > -1 && !ideaElements[idx].MyButton.IsHovered &&
-                    !ideaElements[idx].MyButton.IsSelected && !ideaElements[idx].IsNew)
-                {
-                    HideUnhoveredCoroutine.hidingUnhoveredIdeaIdx = -1;
-                    HideUnhoveredCoroutine.InvokeCallback();
-                }
-            }
-        }
-
-        /*
-        static IEnumerator HideUnhoveredIdea(int idx_ie)
-        {
-            IdeaElement element = ideaElements[idx_ie];
-            hidingUnhoveredIdea = true;
-            // exit when another update interrupt the coroutine
-            while (hidingUnhoveredIdea)
-            {
-                // continue looping when it is still hovered and exit otherwise
-                if (element.MyButton.IsHovered || element.MyButton.IsSelected)
-                {
-                    yield return null;
-                }
-                else
-                {
-                    element.gameObject.SetActive(false);
-                    break;
-                }
-            }
-        }*/
 
         /// <summary>
         /// Save configuration
