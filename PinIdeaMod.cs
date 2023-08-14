@@ -112,6 +112,7 @@ namespace BetterSideBarNS
                     // initialize favor icon
                     GameObject favorLabel = GameObject.Instantiate(ideaElement.NewLabel);
                     favorLabel.transform.SetParent(ideaElement.transform);
+                    favorLabel.transform.SetSiblingIndex(favorLabel.transform.GetSiblingIndex()-1);
                     favorLabel.GetComponent<Image>().sprite = FavorIcon;
                     favorLabel.SetActive(isFidea[idx_ie]);
 

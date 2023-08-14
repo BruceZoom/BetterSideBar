@@ -38,10 +38,11 @@ namespace BetterSideBarNS
                 "Off: Default to search for recipes using the card as ingredients.\n" +
                 "Hold Alt when doing quick search to switch mode.";
 
-            clearOnLeave = C.GetEntry<bool>("clear_on_leave", false);
+            clearOnLeave = C.GetEntry<bool>("clear_on_leave", true);
             clearOnLeave.UI.Name = "Reset Focused Result";
             //clearOnLeave.UI.NameTerm = "clear_on_leave_name";
-            clearOnLeave.UI.Tooltip = "When turned on, reset the focused search result to the first hit entry.";
+            clearOnLeave.UI.Tooltip = "When turned on, reset the focused search result to the first hit entry,\n" +
+                "when moving mouse away from the searched card.";
         }
 
         [HarmonyPatch(typeof(WorldManager), "Update")]
@@ -96,10 +97,18 @@ namespace BetterSideBarNS
                                 if (KnowledgeWasFound(element.MyKnowledge) &&
                                     dict[targetId].Contains(element.MyKnowledge.CardId))
                                 {
-                                    element.IsNew = true;
+                                    if (!element.IsNew)
+                                    {
+                                        //element.IsNew = true;
+                                        SaveManager.instance.CurrentSave.NewKnowledgeIds.Add(element.MyKnowledge.CardId);
+                                    }
+                                    // need to set active so it works properly in the pinned only mode
+                                    element.gameObject.SetActive(true);
                                     searchResults.Add(element);
                                 }
                             }
+                            // need to update idea panel so it works properly in the pinned only mode
+                            GameScreen.instance.UpdateIdeasLog();
                         }
                     }
                 }
