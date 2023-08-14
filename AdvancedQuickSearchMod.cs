@@ -31,7 +31,17 @@ namespace BetterSideBarNS
             mouseUnfocused = true;
 
             defaultResultMode = C.GetEntry<bool>("default_search_result", true);
+            defaultResultMode.UI.Name = "Default Search for Recipe";
+            //defaultResultMode.UI.NameTerm = "default_result_mode_name";
+            defaultResultMode.UI.Tooltip =
+                "On: Default to search for recipes making the card.\n" +
+                "Off: Default to search for recipes using the card as ingredients.\n" +
+                "Hold Alt when doing quick search to switch mode.";
+
             clearOnLeave = C.GetEntry<bool>("clear_on_leave", false);
+            clearOnLeave.UI.Name = "Reset Focused Result";
+            //clearOnLeave.UI.NameTerm = "clear_on_leave_name";
+            clearOnLeave.UI.Tooltip = "When turned on, reset the focused search result to the first hit entry.";
         }
 
         [HarmonyPatch(typeof(WorldManager), "Update")]

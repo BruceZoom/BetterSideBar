@@ -57,6 +57,9 @@ namespace BetterSideBarNS
 
             // initialize hide unfavor toggle
             HideUnfavor = C.GetEntry<bool>("hide_unfavor", false);
+            HideUnfavor.UI.Name = "Pinned Only";
+            //HideUnfavor.UI.NameTerm = "pinned_only_name";
+            HideUnfavor.UI.Tooltip = "When turned on, only pinned ideas will display.";
 
             groupIdxMap = new Dictionary<BlueprintGroup, int>();
             groupFNumMap = new Dictionary<BlueprintGroup, int>();
