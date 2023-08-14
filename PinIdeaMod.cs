@@ -17,24 +17,24 @@ namespace BetterSideBarNS
         private const string FileSeparator = ",";
 
         // MARK: choose to persist names of favorite ideas
-        // because ideaElements may change between different runs
+        // because BlueprintDB.IdeaElements may change between different runs
         private static ConfigEntry<string> __fideas;
         private static List<string> Fideas;
 
         private static ConfigEntry<bool> HideUnfavor;
 
         // array recording wether each idea is favorite
-        // same shape as ideaElements
+        // same shape as BlueprintDB.IdeaElements
         private static bool[] isFidea;
-        // the index (in ideaElements) of the first element in a group
+        // the index (in BlueprintDB.IdeaElements) of the first element in a group
         private static Dictionary<BlueprintGroup, int> groupIdxMap;
         // number of favorite ideas in a group
         private static Dictionary<BlueprintGroup, int> groupFNumMap;
         // the index (in UI) of the first element in a group
         private static Dictionary<BlueprintGroup, int> groupUIIdxMap;
 
-        private static List<BlueprintGroup> groups;
-        private static List<IdeaElement> ideaElements;
+        //private static List<BlueprintGroup> BlueprintDB.BlueprintGroups;
+        //private static List<IdeaElement> BlueprintDB.IdeaElements;
 
         private static Sprite FavorIcon;
 
@@ -79,16 +79,16 @@ namespace BetterSideBarNS
                 List<BlueprintGroup> ___groups, List<ExpandableLabel> ___ideaLabels)
             {
                 // initialize group index
-                groups = ___groups;
-                for (int i = 0; i < groups.Count; i++)
+                BlueprintDB.BlueprintGroups = ___groups;
+                for (int i = 0; i < BlueprintDB.BlueprintGroups.Count; i++)
                 {
-                    BlueprintGroup group = groups[i];
+                    BlueprintGroup group = BlueprintDB.BlueprintGroups[i];
                     groupIdxMap.Add(group, 0);
                     groupFNumMap.Add(group, 0);
                     groupUIIdxMap.Add(group, ___ideaLabels[i].transform.GetSiblingIndex() + 1);
                 }
                 // initialize isFidea
-                ideaElements = ___ideaElements;
+                BlueprintDB.IdeaElements = ___ideaElements;
                 isFidea = new bool[___ideaElements.Count];
                 int[] initFideasIdx = new int[Fideas.Count];
 
@@ -177,10 +177,10 @@ namespace BetterSideBarNS
 
                 // calculate the index (in ideaElement) of the first element in each group
                 int total = ___ideaElements.Count;
-                for (int i = groups.Count - 1; i >= 0; i--)
+                for (int i = BlueprintDB.BlueprintGroups.Count - 1; i >= 0; i--)
                 {
-                    total -= groupIdxMap[groups[i]];
-                    groupIdxMap[groups[i]] = total;
+                    total -= groupIdxMap[BlueprintDB.BlueprintGroups[i]];
+                    groupIdxMap[BlueprintDB.BlueprintGroups[i]] = total;
                 }
 
                 // initial reodering
@@ -309,7 +309,7 @@ namespace BetterSideBarNS
         {
             public static void Postfix(GameScreen __instance, List<ExpandableLabel> ___ideaLabels)
             {
-                for (int i = 0; i < ideaElements.Count; i++)
+                for (int i = 0; i < BlueprintDB.IdeaElements.Count; i++)
                 {
                     UpdateIdea(i);
                 }
@@ -333,7 +333,7 @@ namespace BetterSideBarNS
         /// </summary>
         static void UpdateIdea(int idx_ie)
         {
-            IdeaElement element = ideaElements[idx_ie];
+            IdeaElement element = BlueprintDB.IdeaElements[idx_ie];
             // element's activity differs from the default only when HideUnfavor is true
             if (HideUnfavor.Value)
             {

@@ -1,12 +1,6 @@
 ﻿using HarmonyLib;
-using TMPro;
 using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace BetterSideBarNS
 {
@@ -18,7 +12,13 @@ namespace BetterSideBarNS
             Harmony harmony = new Harmony("better_sidebar");
             harmony.PatchAll();
 
+            // initialize blueprint database
+            BlueprintDB.Initialize(Logger, Config);
+            // initialize pin idea mod
             PinIdeaMod.Initialize(Logger, Config);
+            // initialize advanced search mods
+            AdvancedQuickSearchMod.Initialize(Logger, Config);
+            //AdvancedSearchBarMod.Initialize(Logger, Config);    // not implemented yet
         }
 
         public override void Ready()
