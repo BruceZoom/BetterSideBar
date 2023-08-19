@@ -19,6 +19,7 @@ namespace BetterSideBarNS
             // initialize advanced search mods
             AdvancedQuickSearchMod.Initialize(Logger, Config);
             //AdvancedSearchBarMod.Initialize(Logger, Config);    // not implemented yet
+            SidebarDisplayControl.Initialize(Logger, Config);
         }
 
         public override void Ready()

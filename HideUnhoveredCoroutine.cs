@@ -8,7 +8,7 @@ namespace BetterSideBarNS
     {
         public static IdeaElement hidingUnhoveredIdea;
         public static event Action hidingUnhoveredIdeaCallback;
-
+        
         public static void InterruptCoroutine()
         {
             hidingUnhoveredIdea = null;
@@ -36,9 +36,9 @@ namespace BetterSideBarNS
             public static void Postfix()
             {
                 // when a valid hovered idea is waiting to hide,
-                // and it is no longer hovered/selected/new, then hide it
+                // and it is no longer hovered/selected, then hide it
                 if (hidingUnhoveredIdea != null && !hidingUnhoveredIdea.MyButton.IsHovered &&
-                    !hidingUnhoveredIdea.MyButton.IsSelected && !hidingUnhoveredIdea.IsNew)
+                    !hidingUnhoveredIdea.MyButton.IsSelected)
                 {
                     hidingUnhoveredIdea = null;
                     InvokeCallback();

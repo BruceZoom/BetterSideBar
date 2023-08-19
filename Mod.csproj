@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Publicize Include="GameScripts:GameScreen.wasExpandedDict" />
+    <Publicize Include="GameScripts:GameScreen.KnowledgeWasFound" />
+    <Publicize Include="GameScripts:GameScreen.searchKnowledge" />
+    <Publicize Include="GameScripts:GameScreen.hasFoundKnowledge" />
+    <Publicize Include="GameScripts:WorldManager.SpiritDLCInstalled" />
+    <PackageReference Include="Krafs.Publicizer" Version="2.2.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>$(stacklands)/Stacklands_Data/Managed/0Harmony.dll</HintPath>
       <Private>False</Private>

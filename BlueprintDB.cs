@@ -25,6 +25,8 @@ namespace BetterSideBarNS
         public static List<BlueprintGroup> BlueprintGroups;
         public static List<IdeaElement> IdeaElements;
 
+        public static Action OnLoadSideBarData;
+
         public static void Initialize(ModLogger logger, ConfigFile config)
         {
             L = logger;
@@ -32,6 +34,57 @@ namespace BetterSideBarNS
 
             ResultBPMap = new Dictionary<string, List<string>>();
             IngredBPMap = new Dictionary<string, List<string>>();
+
+            GameDataLoader data = new GameDataLoader();
+            foreach (Blueprint blueprint in data.BlueprintPrefabs)
+            {
+                // skip if the blueprint has not id
+                if (string.IsNullOrWhiteSpace(blueprint.CardId)) return;
+                foreach (Subprint subprint in blueprint.Subprints)
+                {
+                    // update ResultBPMap
+                    if (!string.IsNullOrWhiteSpace(subprint.ResultCard))
+                    {
+                        AddUniqueEntry(ref ResultBPMap, subprint.ResultCard, blueprint.CardId);
+                    }
+                    // do not record result action
+                    //if (!string.IsNullOrWhiteSpace(print.ResultAction))
+                    //    L.Log("\tResult Action:" + print.ResultAction);
+                    foreach (string card in subprint.ExtraResultCards)
+                    {
+                        if (!string.IsNullOrWhiteSpace(card))
+                        {
+                            AddUniqueEntry(ref ResultBPMap, card, blueprint.CardId);
+                        }
+                    }
+
+                    // update IngredBPMap
+                    foreach (string card in subprint.RequiredCards)
+                    {
+                        if (!string.IsNullOrWhiteSpace(card))
+                        {
+                            AddUniqueEntry(ref IngredBPMap, card, blueprint.CardId);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        [HarmonyPatch(typeof(GameScreen), "InitIdeaElements")]
+        public class LoadSideBardDataHarmonyPatches
+        {
+            public static void Postfix(GameScreen __instance, List<IdeaElement> ___ideaElements,
+                List<BlueprintGroup> ___groups, List<ExpandableLabel> ___ideaLabels)
+            {
+                // initialize group index
+                BlueprintGroups = ___groups;
+                IdeaElements = ___ideaElements;
+
+                OnLoadSideBarData?.Invoke();
+                PinIdeaMod.InitIdeaElements(__instance, ___ideaElements, ___groups, ___ideaLabels);
+                AdvancedQuickSearchMod.InitIdeaElements();
+            }
         }
 
         static bool AddUniqueEntry(ref Dictionary<string, List<string>> dict, string key, string value)
@@ -44,6 +97,7 @@ namespace BetterSideBarNS
             return true;
         }
 
+        /*
         [HarmonyPatch(typeof(Blueprint), "Init")]
         public class BlueprintDataAcquisitionHarmonyPatches
         {
@@ -79,6 +133,6 @@ namespace BetterSideBarNS
                     }
                 }
             }
-        }
+        }*/
     }
 }
