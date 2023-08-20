@@ -35,7 +35,16 @@ namespace BetterSideBarNS
             ResultBPMap = new Dictionary<string, List<string>>();
             IngredBPMap = new Dictionary<string, List<string>>();
 
-            GameDataLoader data = new GameDataLoader();
+            GameDataLoader data;
+            if (WorldManager.instance != null && WorldManager.instance.SpiritDLCInstalled())
+            {
+                data = new GameDataLoader();
+            }
+            else
+            {
+                data = new GameDataLoader(false);
+            }
+            
             foreach (Blueprint blueprint in data.BlueprintPrefabs)
             {
                 // skip if the blueprint has not id
@@ -80,6 +89,13 @@ namespace BetterSideBarNS
                 // initialize group index
                 BlueprintGroups = ___groups;
                 IdeaElements = ___ideaElements;
+                /*if (WorldManager.instance != null && !WorldManager.instance.SpiritDLCInstalled())
+                {
+                    BlueprintGroups.Remove(BlueprintGroup.Happiness);
+                    BlueprintGroups.Remove(BlueprintGroup.Greed);
+                    BlueprintGroups.Remove(BlueprintGroup.Death);
+                    for(int i=0; i<IdeaElements)
+                }*/
 
                 OnLoadSideBarData?.Invoke();
                 PinIdeaMod.InitIdeaElements(__instance, ___ideaElements, ___groups, ___ideaLabels);

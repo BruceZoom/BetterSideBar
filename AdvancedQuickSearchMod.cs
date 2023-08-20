@@ -95,7 +95,7 @@ namespace BetterSideBarNS
         }
 
         [HarmonyPatch(typeof(WorldManager), "Update")]
-        public class TestHarmonyPatches
+        public class QuickSearchTriggerHarmonyPatches
         {
             public static void Postfix(CardData __instance)
             {
@@ -122,7 +122,7 @@ namespace BetterSideBarNS
                         string newTargetId = WorldManager.instance.HoveredCard.CardData.Id;
                         L.Log(newTargetId);
                         // focus on next search result
-                        if (newTargetId == targetId && newMode == mode)
+                        if (newTargetId == targetId && newMode == mode && searchResults.Count > 0)
                         {
                             currentFocusIdx = (currentFocusIdx + 1) % searchResults.Count;
                             /*SnapTo(searchResults[currentFocusIdx]);*/

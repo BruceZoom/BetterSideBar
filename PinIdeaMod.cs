@@ -92,7 +92,7 @@ namespace BetterSideBarNS
         {
             // initialize group index
             BlueprintDB.BlueprintGroups = ___groups;
-            for (int i = 0; i < BlueprintDB.BlueprintGroups.Count; i++)
+            for (int i = 0; i < ___ideaLabels.Count; i++)
             {
                 BlueprintGroup group = BlueprintDB.BlueprintGroups[i];
                 groupIdxMap.Add(group, 0);
@@ -197,7 +197,7 @@ namespace BetterSideBarNS
 
             // calculate the index (in ideaElement) of the first element in each group
             int total = ___ideaElements.Count;
-            for (int i = BlueprintDB.BlueprintGroups.Count - 1; i >= 0; i--)
+            for (int i = ___ideaLabels.Count - 1; i >= 0; i--)
             {
                 total -= groupIdxMap[BlueprintDB.BlueprintGroups[i]];
                 groupIdxMap[BlueprintDB.BlueprintGroups[i]] = total;
